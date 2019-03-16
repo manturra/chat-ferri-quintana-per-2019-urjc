@@ -1,27 +1,26 @@
 import socket
-ip = '127.0.0.1'
-puerto = 8081
+ip = "10.0.2.15"
+puerto = 8080
 respuestas = 2
-def lee_mensaje(clientsocket):
+def lee_mensaje(cliente):
     condicion = True
     while condicion:
-        mensaje_cliente = clientsocket.recv(2048).decode("utf-8")
-        if mensaje_cliente == "adios":
-            condicion = False
+        mensaje_cliente = cliente.recv(2048).decode("utf-8")
+        print(mensaje_cliente)
         mensaje_servidor = input("")
-        send_bytes = str.encode(mensaje_servidor)
-        clientsocket.send(send_bytes)
-    clientsocket.close()
+        mensaje_servidor = str.encode(mensaje_servidor)
+        cliente.send(mensaje_servidor)
+
 serversocket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 
 try:
     serversocket.bind((ip, puerto))
     serversocket.listen(respuestas)
-    print('Esperando conexion en {ip},{puerto}'.format(ip = ip, puerto = puerto))
+    print("Esperando conexion en el puerto:",puerto,"y en la ip:",ip)
     (cliente, address) = serversocket.accept()
-    lee_mensaje(clientsocket)
+    lee_mensaje(cliente)
 
 except KeyboardInterrupt:
     cliente.close()
-    servidor.close()
-    print('Cerrando el chat...')
+    serversocket.close()
+    print("La conversación se acabó...")
